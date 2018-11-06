@@ -37,7 +37,7 @@ app.get('/todos/:id', (req, res) => {
     return res.status(404).send("Invalid Id");
   }
 
-  Todo.findById(id).then((doc) => {
+  Todo.findById (id).then((doc) => {
     if(doc)
       res.status(200).send(doc);
     else
@@ -45,7 +45,25 @@ app.get('/todos/:id', (req, res) => {
   }, (err) => {
     res.status(400).send({});
   });
-})
+});
+
+app.delete('/todos/:id', (req, res) => {
+  var id = req.params.id;
+
+  if(!ObjectID.isValid(id)){
+    return res.status(404).send();
+  }
+
+  Todo.findByIdAndRemove(id).then((deletedTodo) => {
+    if(!deletedTodo){
+      return res.status(404).send();
+    }else{
+      res.status(200).send(deletedTodo);
+    }
+  }, (err) => {
+    res.status(400).send({});
+  });
+});
 
 app.listen(3000, () => {
   console.log("Server is Up and runnig on port 3000");
